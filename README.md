@@ -8,7 +8,7 @@ For this coding challenge, you will develop tools that could help analyze the co
 This challenge is to implement two features:
 
 1. Clean and extract the text from the raw JSON tweets that come from the Twitter Streaming API, and track the number of tweets that required cleaning.
-2. Calculate the average degree of a vertex in a Twitter graph for the last 60 seconds, and update this each time a new tweet appears.
+2. Calculate the average degree of a vertex in a Twitter hashtag graph for the last 60 seconds, and update this each time a new tweet appears.
 
 For example, suppose the following three tweets come in, one after the other
 
@@ -35,7 +35,23 @@ tweets.txt:
 
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`.  In order for your submission to be checked, it needs to output the results of your first feature in order, according to the [ASCII Code](http://www.ascii-code.com), as shown in the above example.  For simplicity, treat all punctuation as part of the word itself, so 'business.' would be counted as a different word than 'business' without the period.
 
-Ideally, the second feature that updates the median as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the this API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
+The second feature will continually update the average degree of a Twitter hashtag graph as each tweet arrives. For each incoming tweet, the hastags needs to be extracted. 
+```
+#Spark and #Flink go head to head at Spark Summit!
+```
+```
+#Spark #Flink
+```
+
+Two hashtags will be connected if and only if they are present in the same tweet.
+```
+(#Spark, #Flink)
+(#Flink, #Spark)
+```
+A good way to create this graph is by first forming an edge list where an edge is defined by two hashtags that are connected. 
+
+
+Ideally, the second feature that updates the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
 
 You may write your solution in any mainstream programming language such as C, C++, C#, Clojure, Erlang, Go, Haskell, Java, Python, Ruby, or Scala - then submit a link to a Github repo with your source code.  In addition to the source code, the top-most directory of your repo must include the `tweet_input` and `tweet_output` directories, and a shell script named `run.sh` that compiles and runs the program(s) that implement these features.  If your solution requires additional libraries, environments, or dependencies, you must specify these in your README documentation.  See the figure below for the required structure of the top-most directory in your repo, or simply clone this repo.
 
