@@ -57,9 +57,9 @@ Extracted hashtags from each tweet
 
 Two hashtags will be connected in both directions if and only if they are present in the same tweet. Only tweets that contain two or more hashtags can potentially create new edges. 
 
-A good way to create this graph is by first forming an edge list where an edge is defined by two hashtags that are connected. 
+A good way to create this graph is with an edge list where an edge is defined by two hashtags that are connected. 
 
-Edge list made by all the above tweets is as follows:
+The edge list made by all the above tweets is as follows:
 ```
 #Spark <-> #Apache
 
@@ -70,9 +70,9 @@ Edge list made by all the above tweets is as follows:
 #Flink <-> #Spark
 ```
 
-Notice that the third tweet did not generate a new edge since there were no other hashtags besides #Apache in that tweet. Also, all tweets occured in the 60 seconds time window as compared to the latest tweet and they all are included in building the graph.
+Notice that the third tweet did not generate a new edge since there were no other hashtags besides `#Apache` in that tweet. Also, all tweets occured in the 60 seconds time window as compared to the latest tweet and they all are included in building the graph.
 
-The edge list can be visualized with the following diagrams where each node is a hashtag. The first tweet will generate the #Spark and #Apache nodes.
+The edge list can be visualized with the following diagrams where each node is a hashtag. The first tweet will generate the `#Spark` and `#Apache` nodes.
 
 ![spark-apache-graph](images/htag_graph_1.png)
 
@@ -110,7 +110,7 @@ The extracted hashtags are then
 #HBase, #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
 ```
 
-and added to the adjacency list
+and added to the edge list
 ```
 #Spark <-> #Apache
 
@@ -168,7 +168,7 @@ The new hashtags to be used are as follows
 #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
 ```
 
-The new adjacency list only has the `#Spark` <-> `#Apache` edge removed since `#Hadoop` <-> `#Apache` from the new tweet already exists in the adjacency list.
+The new edge list only has the `#Spark` <-> `#Apache` edge removed since `#Hadoop` <-> `#Apache` from the new tweet already exists in the edge list.
 ```
 #Apache <-> #Hadoop
 #Hadoop <-> #Storm
