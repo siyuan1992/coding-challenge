@@ -36,19 +36,47 @@ tweets.txt:
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`.  In order for your submission to be checked, it needs to output the results of your first feature in order, according to the [ASCII Code](http://www.ascii-code.com), as shown in the above example.  For simplicity, treat all punctuation as part of the word itself, so 'business.' would be counted as a different word than 'business' without the period.
 
 The second feature will continually update the average degree of a Twitter hashtag graph as each tweet arrives. For each incoming tweet, the hastags needs to be extracted. 
+
+Example of 4 tweets
 ```
-#Spark and #Flink go head to head at Spark Summit!
-```
-```
-#Spark #Flink
+Spark Summit East this week! #Spark #Apache
+Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm
+Doing great work #Apache
+Excellent post on #Flink and #Spark
 ```
 
-Two hashtags will be connected if and only if they are present in the same tweet.
+Extracted hashtags from each tweet
 ```
-(#Spark, #Flink)
-(#Flink, #Spark)
+#Spark, #Apache
+#Apache, #Hadoop, #Storm
+#Apache
+#Flink, #Spark
 ```
+
+Two hashtags will be connected in both directions if and only if they are present in the same tweet. Only tweets that contain two or more hashtags can potentially create new edges. 
+
 A good way to create this graph is by first forming an edge list where an edge is defined by two hashtags that are connected. 
+
+Edge list made by the 
+```
+#Spark, #Apache
+#Apache, #Spark
+
+#Apache, #Hadoop
+#Hadoop, #Apache
+#Hadoop, #Storm
+#Storm, #Hadoop
+#Storm, #Apache
+#Apache, #Storm
+
+#Flink, #Spark
+#Spark, #Flink
+```
+
+Notice that the third tweet did not generate a new edge since there were no other hashtags besides #Apache in that tweet.
+
+The edge list can be visualized with the following diagram where each node is a hashtag
+
 
 
 Ideally, the second feature that updates the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
