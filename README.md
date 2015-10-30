@@ -10,13 +10,14 @@ This challenge is to implement two features:
 1. Clean and extract the text from the raw JSON tweets that come from the Twitter Streaming API, and track the number of tweets that required cleaning.
 2. Calculate the average degree of a vertex in a Twitter hashtag graph for the last 60 seconds, and update this each time a new tweet appears.
 
+For example, suppose the following three tweets come in, one after the other
 
-For this challenge, we need to define two concepts
+In this challenge we have made a few assumptions to make things simpler:
 
-- By "cleaning", we mean removing any escape characters and non-ASCII characters, so that numbers, and ASCII characters like `:`, `@`, and `#`.
+- Each tweet only contains lowercase letters, numbers, and ASCII characters like `:`, `@`, and `#`.
+- A word is defined as anything separated by whitespace. 
 
-
-Note that the output of the first feature
+Note that the output of the first feature is outputted in order, according to the [ASCII Code](http://www.ascii-code.com).   
 
 ## Details of Implementation
 
@@ -35,7 +36,9 @@ tweets.txt:
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`.  In order for your submission to be checked, it needs to output the results of your first feature in order, according to the [ASCII Code](http://www.ascii-code.com), as shown in the above example.  For simplicity, treat all punctuation as part of the word itself, so 'business.' would be counted as a different word than 'business' without the period.
 
 ## Second Feature
-The second feature will continually update the Twitter hashtag graph and hence, the average degree of the graph. The graph should just be built using tweets that arrived in the last 60 seconds as compared to the timestamp of the latest tweet. As new tweets come in, edges formed with tweets older than 60 seconds from the timstamp of the latest tweet should be evicted. For each incoming tweet, only the hastags and timestamp needs to be extracted. 
+The second feature will continually update the Twitter hashtag graph and hence, the average degree of the graph. The graph should just be built using tweets that arrived in the last 60 seconds as compared to the timestamp of the latest tweet. As new tweets come in, edges formed with tweets older than 60 seconds from the timstamp of the latest tweet should be evicted. For each incoming tweet, only extract the following fields in the JSON response
+* "hastags" - hashtags found in the tweet
+* "created_at" - timestamp of the tweet
 
 ### Building the Twitter Hashtag Graph
 Example of 4 tweets
@@ -54,7 +57,7 @@ Extracted hashtags from each tweet
 #Flink, #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
 ```
 
-Two hashtags will be connected in both directions if and only if they are present in the same tweet. Only tweets that contain two or more hashtags can potentially create new edges. 
+Two hashtags will be connected if and only if they are present in the same tweet. Only tweets that contain two or more **DISTINCT** hashtags can create new edges.
 
 A good way to create this graph is with an edge list where an edge is defined by two hashtags that are connected. 
 
@@ -211,8 +214,8 @@ Alternatively, here is example output of the `tree` command:
 	├── README.md  
 	├── run.sh  
 	├── src  
-	│   ├── average_degree.py  
-	│   └── tweets_cleaned.py  
+	│   ├── median_unique.py  
+	│   └── words_tweeted.py  
 	├── tweet_input  
 	│   └── tweets.txt  
 	└── tweet_output  
