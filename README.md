@@ -87,7 +87,7 @@ The fourth tweet contains #Flink and #Spark. #Spark already exists, so only #Fli
 
 We can now calculate the degree of each node which is defined as the number of connected neighboring nodes.
 
-![graph-degree1](images/htag_degree1.png)
+![graph-degree3](images/htag_degree3.png)
 
 The average degree for simplicity will be calculated by summing the degrees of all nodes in all graphs and dividing by the total number of nodes in all graphs.
 
@@ -123,7 +123,7 @@ The graph now looks like the following
 
 with the updated degree calculation for each node. Here only #Spark needs to be incremented due to the additional #HBase node.
 
-![graph-degree2](images/htag_degree_2.png)
+![graph-degree4](images/htag_degree_4.png)
 
 The average degree will be recalculated using the same formula as before.
 
@@ -173,7 +173,7 @@ The old graph has now been disconnected forming two graphs.
 
 We'll then calculate the new degree for all the nodes in both graphs.
 
-![graph-degree3](images/htag_degree_3.png)
+![graph-degree5](images/htag_degree_5.png)
 
 Recalculating the average degree of all nodes in all graphs is as follows
 Average Degree = (1+2+1+2+2+2)/6 = 1.67
