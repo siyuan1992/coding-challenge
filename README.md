@@ -76,13 +76,13 @@ The edge list can be visualized with the following diagrams where each node is a
 
 ![spark-apache-graph](images/htag_graph_1.png)
 
-The second tweet contains 3 hashtags #Apache, #Hadoop, and #Storm. #Apache already exists, so only #Hadoop and #Storm are added to the graph.
+The second tweet contains 3 hashtags `#Apache`, `#Hadoop`, and `#Storm`. `#Apache` already exists, so only `#Hadoop` and `#Storm` are added to the graph.
 
 ![apache-hadoop-storm-graph](images/htag_graph_2.png)
 
 The third tweet generated no edges, so no new nodes will be added to the graph.
 
-The fourth tweet contains #Flink and #Spark. #Spark already exists, so only #Flink will be added.
+The fourth tweet contains `#Flink` and `#Spark`. `#Spark` already exists, so only `#Flink` will be added.
 
 ![flink-spark-graph](images/htag_graph_3.png)
 
@@ -127,7 +127,7 @@ The graph now looks like the following
 
 ![hbase-spark-graph](images/htag_graph_4.png)
 
-with the updated degree calculation for each node. Here only #Spark needs to be incremented due to the additional #HBase node.
+with the updated degree calculation for each node. Here only `#Spark` needs to be incremented due to the additional `#HBase` node.
 
 ![graph-degree4](images/htag_degree_4.png)
 
@@ -168,7 +168,7 @@ The new hashtags to be used are as follows
 #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
 ```
 
-The new adjacency list only has the #Spark <-> #Apache edge removed since #Hadoop <-> #Apache from the new tweet already exists in the adjacency list.
+The new adjacency list only has the `#Spark` <-> `#Apache` edge removed since `#Hadoop` <-> `#Apache` from the new tweet already exists in the adjacency list.
 ```
 #Apache <-> #Hadoop
 #Hadoop <-> #Storm
