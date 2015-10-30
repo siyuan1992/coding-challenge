@@ -7,7 +7,7 @@ For this coding challenge, you will develop tools that could help analyze the co
 
 This challenge is to implement two features:
 
-1. Clean and extract the text from the raw JSON tweets that come from the Twitter Streaming API, and track the number of tweets that required cleaning.
+1. Clean and extract the text from the raw JSON tweets that come from the Twitter Streaming API, and track the number of tweets that contain unicode.
 2. Calculate the average degree of a vertex in a Twitter hashtag graph for the last 60 seconds, and update this each time a new tweet appears.
 
 Here, we have to define a few concepts (though there will be examples below to clarify):
@@ -34,7 +34,8 @@ tweets.txt:
 The point of the first feature is to extract and clean the relevant data for the Twitter JSON messages.  For example, a typical tweet might come in the following JSON message (which we have expanded on to multiple lines to make it easier to read):
 
 <pre>
-{"created_at":"<b>Thu Oct 29 17:51:01 +0000 2015</b>","id":659789759787589632,
+{
+ "created_at":"<b>Thu Oct 29 17:51:01 +0000 2015</b>","id":659789759787589632,
  "id_str":"659789759787589632","text":"<b>Spark Summit East this week! #Spark #Apache</b>",
  "source":"\u003ca href=\"http:\/\/twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c\/a\u003e",
  "truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,
@@ -60,15 +61,67 @@ The point of the first feature is to extract and clean the relevant data for the
 }  
 </pre>
 
-Where the relevant text that we want to extract has been bolded.  After extracting and cleaning it, this tweet should be outputted as
+Where the relevant text that we want to extract has been bolded.  After extracting this information, this tweet should be outputted as
 
 	Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 
 with the format of 
 
-	<contents of `text` field> (timestamp: <contents of `created_at` field>)
+	<contents of "text" field> (timestamp: <contents of "created_at" field>)
 
-Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`, with each new tweet on a newline.
+In this case, the tweet's text was already clean, but another example tweet might be:
+
+<pre>
+{
+ "created_at":"<b>Thu Oct 29 18:10:49 +0000 2015</b>","id":659794531844509700,"id_str":"659794531844509700",
+ "text":"<b>I'm at Terminal de Integra\u00e7\u00e3o do Varadouro in Jo\u00e3o Pessoa, PB https:\/\/t.co\/HOl34REL1a</b>",
+ "source":"\u003ca href=\"http:\/\/foursquare.com\" rel=\"nofollow\"\u003eFoursquare\u003c\/a\u003e",
+ "truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,
+ "in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":60196177,"id_str":"60196177","name":"Jo\u00e3o Cassimiro","screen_name":"Jcassimironeto","location":"Paraiba","url":"http:\/\/www.facebook.com\/profile.php?id=1818814650",
+ "description":"jcassimironeto","protected":false,"verified":false,"followers_count":240,"friends_count":654,
+ "listed_count":0,"favourites_count":26,"statuses_count":2065,"created_at":"Sun Jul 26 01:15:03 +0000 2009",
+ utc_offset":-7200,"time_zone":"Brasilia","geo_enabled":true,"lang":"pt","contributors_enabled":false,
+ "is_translator":false,"profile_background_color":"022330","profile_background_image_url":"http:\/\/pbs.twimg.com\/profile_background_images\/671814600\/1028c894ede2eb444ebfd12f94f6cb93.jpeg",
+ "profile_background_image_url_https":"https:\/\/pbs.twimg.com\/profile_background_images\/671814600\/1028c894ede2eb444ebfd12f94f6cb93.jpeg",
+ "profile_background_tile":true,"profile_link_color":"0084B4","profile_sidebar_border_color":"FFFFFF",
+ "profile_sidebar_fill_color":"C0DFEC","profile_text_color":"333333","profile_use_background_image":true,
+ "profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/618238977565433856\/YM1aKFZj_normal.jpg",
+ "profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/618238977565433856\/YM1aKFZj_normal.jpg",
+ "profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/60196177\/1395970110","default_profile":false,
+ "default_profile_image":false,"following":null,"follow_request_sent":null,"notifications":null},
+ "geo":{"type":"Point","coordinates":[-7.11792683,-34.88985837]},"coordinates":{"type":"Point",
+ "coordinates":[-34.88985837,-7.11792683]},"place":{"id":"c9f2f46c0d1b963d","url":"https:\/\/api.twitter.com\/1.1\/geo\/id\/c9f2f46c0d1b963d.json","place_type":"city","name":"Jo\u00e3o Pessoa","full_name":"Jo\u00e3o Pessoa, Para\u00edba","country_code":"BR","country":"Brasil","bounding_box":{"type":"Polygon",
+ "coordinates":[[[-34.971299,-7.243257],[-34.971299,-7.055696],[-34.792907,-7.055696],[-34.792907,-7.243257]]]},"attributes":{}},
+ "contributors":null,"is_quote_status":false,"retweet_count":0,"favorite_count":0,"entities":{"hashtags":[],
+ "urls":[{"url":"https:\/\/t.co\/HOl34REL1a","expanded_url":"https:\/\/www.swarmapp.com\/c\/2tATygSTvBu",
+ "display_url":"swarmapp.com\/c\/2tATygSTvBu","indices":[62,85]}],"user_mentions":[],"symbols":[]},
+ "favorited":false,"retweeted":false,"possibly_sensitive":false,"filter_level":"low","lang":"pt","timestamp_ms":"1446142249438"
+}
+</pre>
+
+Now, the tweet's text needs to be cleaned by replacing the escape characters and removing the non-ASCII unicode characters to get the result:
+
+	I'm at Terminal de Integrao do Varadouro in Joo Pessoa, PB https://t.co/HOl34REL1a (timestamp: Thu Oct 29 18:10:49 +0000 2015)
+
+Perhaps it would make more sense to convert the unicode to similar ASCII letters, but we would like you to remove them instead for simplicity.  To help decide whether it would be worth spending more time on the unicode (perhaps for a future version of this feature), you will have to track the number of tweets that contain unicode, and write the following message at the bottom of the output file (with a newline preceding it):
+
+	<number of tweets that had unicode> tweets contained unicode.
+
+Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`, with each new tweet on a newline.  To be clear, if `tweets.txt` originally contained the following tweets:
+
+```
+{"created_at":"Thu Oct 29 17:51:01 +0000 2015","id":659789756637822976,"id_str":"659789756637822976","text":"Spark Summit East this week! #Spark #Apache","source":"\u003ca href=\"http:\/\/twitter.com\/download\/iphone\" rel=\"nofollow\"\u003eTwitter for iPhone\u003c\/a\u003e","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":42353977,"in_reply_to_user_id_str":"42353977","in_reply_to_screen_name":"KayKay121","user":{"id":317846866,"id_str":"317846866","name":"BaddieWinkleIsBae","screen_name":"WhoIsPetlo","location":"Polokwane | Grahamstown ","url":null,"description":"Extrovert","protected":false,"verified":false,"followers_count":767,"friends_count":393,"listed_count":0,"favourites_count":891,"statuses_count":41162,"created_at":"Wed Jun 15 15:31:30 +0000 2011","utc_offset":-10800,"time_zone":"Greenland","geo_enabled":true,"lang":"en","contributors_enabled":false,"is_translator":false,"profile_background_color":"C0DEED","profile_background_image_url":"http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_image_url_https":"https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_tile":false,"profile_link_color":"0084B4","profile_sidebar_border_color":"C0DEED","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/659384066798694401\/Ogdtb4HJ_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/659384066798694401\/Ogdtb4HJ_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/317846866\/1443969906","default_profile":true,"default_profile_image":false,"following":null,"follow_request_sent":null,"notifications":null},"geo":null,"coordinates":null,"place":{"id":"59efa64f5c8f5340","url":"https:\/\/api.twitter.com\/1.1\/geo\/id\/59efa64f5c8f5340.json","place_type":"city","name":"Grahamstown","full_name":"Grahamstown, South Africa","country_code":"ZA","country":"South Africa","bounding_box":{"type":"Polygon","coordinates":[[[26.479477,-33.326355],[26.479477,-33.270332],[26.560003,-33.270332],[26.560003,-33.326355]]]},"attributes":{}},"contributors":null,"is_quote_status":false,"retweet_count":0,"favorite_count":0,"entities":{"hashtags":[],"urls":[],"user_mentions":[{"screen_name":"KayKay121","name":"KK_Rakitla95","id":42353977,"id_str":"42353977","indices":[0,10]}],"symbols":[],"media":[{"id":659789679491858432,"id_str":"659789679491858432","indices":[68,91],"media_url":"http:\/\/pbs.twimg.com\/tweet_video_thumb\/CSgLN8CUwAAzgez.png","media_url_https":"https:\/\/pbs.twimg.com\/tweet_video_thumb\/CSgLN8CUwAAzgez.png","url":"https:\/\/t.co\/HjZR3d5QaQ","display_url":"pic.twitter.com\/HjZR3d5QaQ","expanded_url":"http:\/\/twitter.com\/WhoIsPetlo\/status\/659789756637822976\/photo\/1","type":"photo","sizes":{"thumb":{"w":150,"h":150,"resize":"crop"},"small":{"w":300,"h":300,"resize":"fit"},"large":{"w":300,"h":300,"resize":"fit"},"medium":{"w":300,"h":300,"resize":"fit"}}}]},"extended_entities":{"media":[{"id":659789679491858432,"id_str":"659789679491858432","indices":[68,91],"media_url":"http:\/\/pbs.twimg.com\/tweet_video_thumb\/CSgLN8CUwAAzgez.png","media_url_https":"https:\/\/pbs.twimg.com\/tweet_video_thumb\/CSgLN8CUwAAzgez.png","url":"https:\/\/t.co\/HjZR3d5QaQ","display_url":"pic.twitter.com\/HjZR3d5QaQ","expanded_url":"http:\/\/twitter.com\/WhoIsPetlo\/status\/659789756637822976\/photo\/1","type":"animated_gif","sizes":{"thumb":{"w":150,"h":150,"resize":"crop"},"small":{"w":300,"h":300,"resize":"fit"},"large":{"w":300,"h":300,"resize":"fit"},"medium":{"w":300,"h":300,"resize":"fit"}},"video_info":{"aspect_ratio":[1,1],"variants":[{"bitrate":0,"content_type":"video\/mp4","url":"https:\/\/pbs.twimg.com\/tweet_video\/CSgLN8CUwAAzgez.mp4"}]}}]},"favorited":false,"retweeted":false,"possibly_sensitive":false,"filter_level":"low","lang":"en","timestamp_ms":"1446141110940"}
+{"created_at":"Thu Oct 29 18:10:49 +0000 2015","id":659794531844509700,"id_str":"659794531844509700","text":"I'm at Terminal de Integra\u00e7\u00e3o do Varadouro in Jo\u00e3o Pessoa, PB https:\/\/t.co\/HOl34REL1a","source":"\u003ca href=\"http:\/\/foursquare.com\" rel=\"nofollow\"\u003eFoursquare\u003c\/a\u003e","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":60196177,"id_str":"60196177","name":"Jo\u00e3o Cassimiro","screen_name":"Jcassimironeto","location":"Paraiba","url":"http:\/\/www.facebook.com\/profile.php?id=1818814650","description":"jcassimironeto","protected":false,"verified":false,"followers_count":240,"friends_count":654,"listed_count":0,"favourites_count":26,"statuses_count":2065,"created_at":"Sun Jul 26 01:15:03 +0000 2009","utc_offset":-7200,"time_zone":"Brasilia","geo_enabled":true,"lang":"pt","contributors_enabled":false,"is_translator":false,"profile_background_color":"022330","profile_background_image_url":"http:\/\/pbs.twimg.com\/profile_background_images\/671814600\/1028c894ede2eb444ebfd12f94f6cb93.jpeg","profile_background_image_url_https":"https:\/\/pbs.twimg.com\/profile_background_images\/671814600\/1028c894ede2eb444ebfd12f94f6cb93.jpeg","profile_background_tile":true,"profile_link_color":"0084B4","profile_sidebar_border_color":"FFFFFF","profile_sidebar_fill_color":"C0DFEC","profile_text_color":"333333","profile_use_background_image":true,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/618238977565433856\/YM1aKFZj_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/618238977565433856\/YM1aKFZj_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/60196177\/1395970110","default_profile":false,"default_profile_image":false,"following":null,"follow_request_sent":null,"notifications":null},"geo":{"type":"Point","coordinates":[-7.11792683,-34.88985837]},"coordinates":{"type":"Point","coordinates":[-34.88985837,-7.11792683]},"place":{"id":"c9f2f46c0d1b963d","url":"https:\/\/api.twitter.com\/1.1\/geo\/id\/c9f2f46c0d1b963d.json","place_type":"city","name":"Jo\u00e3o Pessoa","full_name":"Jo\u00e3o Pessoa, Para\u00edba","country_code":"BR","country":"Brasil","bounding_box":{"type":"Polygon","coordinates":[[[-34.971299,-7.243257],[-34.971299,-7.055696],[-34.792907,-7.055696],[-34.792907,-7.243257]]]},"attributes":{}},"contributors":null,"is_quote_status":false,"retweet_count":0,"favorite_count":0,"entities":{"hashtags":[],"urls":[{"url":"https:\/\/t.co\/HOl34REL1a","expanded_url":"https:\/\/www.swarmapp.com\/c\/2tATygSTvBu","display_url":"swarmapp.com\/c\/2tATygSTvBu","indices":[62,85]}],"user_mentions":[],"symbols":[]},"favorited":false,"retweeted":false,"possibly_sensitive":false,"filter_level":"low","lang":"pt","timestamp_ms":"1446142249438"}
+```
+
+then the output in `ft1.txt` should contain:
+
+```
+Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+I'm at Terminal de Integrao do Varadouro in Joo Pessoa, PB https://t.co/HOl34REL1a (timestamp: Thu Oct 29 18:10:49 +0000 2015)
+
+1 tweets contained unicode.
+```
 
 ## Second Feature
 The second feature will continually update the Twitter hashtag graph and hence, the average degree of the graph. The graph should just be built using tweets that arrived in the last 60 seconds as compared to the timestamp of the latest tweet. As new tweets come in, edges formed with tweets older than 60 seconds from the timstamp of the latest tweet should be evicted. For each incoming tweet, only extract the following fields in the JSON response
