@@ -37,6 +37,7 @@ Your program should output the results of this first feature to a text file name
 
 The second feature will continually update the Twitter hashtag graph and hence, the average degree of the graph. But as the graph should just be built using tweets that arrived in the last 60 seconds. As new tweets come in, edges and nodes formed in the graph due to tweets older than 60 seconds in time should be evicted. For each incoming tweet, the hastags and timestamp needs to be extracted. 
 
+## Building the Twitter Hashtag Graph
 Example of 4 tweets
 ```
 Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
@@ -66,7 +67,6 @@ Edge list made by all the above tweets is as follows:
 #Storm <-> #Apache
 
 #Flink <-> #Spark
-#Spark <-> #Flink
 ```
 
 Notice that the third tweet did not generate a new edge since there were no other hashtags besides #Apache in that tweet. Also, all tweets occured in the 60 seconds time window as compared to the latest tweet and they all are included in building the graph.
@@ -85,12 +85,92 @@ The fourth tweet contains #Flink and #Spark. #Spark already exists, so only #Fli
 We can now calculate the degree of each node which is defined as the number of connected neighboring nodes.
 ![graph-degree1](images/htag_degree1.png)
 
-The average degree of the graph is calculated by summing the degrees of all nodes and dividing by the total number of nodes in the graph
+The average degree for simplicity will be calculated by summing the degrees of all nodes in all graphs and dividing by the total number of nodes in all graphs.
 
 Average Degree = (1+2+3+2+2)/5 = 2.0
 
+## Modifying the Twitter Hashtag Graph with Incoming Tweet
+Now let's say another tweet has arrived
+```
+New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+```
 
+The extracted hashtags are then
+```
+#HBase, #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+```
 
+and added to the adjacency list
+```
+#Spark <-> #Apache
+
+#Apache <-> #Hadoop
+#Hadoop <-> #Storm
+#Storm <-> #Apache
+
+#Flink <-> #Spark
+
+#HBase <-> $Spark
+```
+
+The graph now looks like the following
+![hbase-spark-graph](images/htag_graph_4.png)
+
+with the updated degree calculation for each node. Here only #Spark needs to be incremented due to the additional #HBase node.
+![graph-degree2](images/htag_degree_2.png)
+
+The average degree will be recalculated using the same formula as before.
+
+Average Degree = (1+3+1+3+2+2)/6 = 2.0
+
+## Maintaining Data within the 60 Second Window
+Now let's say that the next tweet that comes in has the following timestamp
+```
+New 2.7.1 version update for #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+```
+
+The full list of tweets now is 
+```
+Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+Doing great work #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
+New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+New 2.7.1 version update for #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+```
+
+We can see that the very first tweet has a timestamp that is more than 60 seconds behind this new tweet. This means that we do not want to include this tweet in our average degree calculation.
+
+The new hashtags to be used are as follows
+```
+#Apache, #Hadoop, #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+#Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+#Flink, #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
+#HBase, #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+#Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+```
+
+The new adjacency list only has the #Spark <-> #Apache edge removed since #Hadoop <-> #Apache from the new tweet already exists in the adjacency list.
+```
+#Apache <-> #Hadoop
+#Hadoop <-> #Storm
+#Storm <-> #Apache
+
+#Flink <-> #Spark
+
+#HBase <-> $Spark
+```
+
+The old graph has now been disconnected forming two graphs.
+![evicted-spark-apache](images/htag_graph_5.png)
+
+We'll then calculate the new degree for all the nodes in both graphs.
+![graph-degree3](images/htag_degree_3.png)
+
+Recalculating the average degree of all nodes in all graphs is as follows
+Average Degree = (1+2+1+2+2+2)/6 = 1.67
+
+Normally the average degree is calculated for a single graph, but maintaining multiple graphs for this problem can be quite difficult. For simplicity we are only interested in calculating the average degree of of all the nodes in all graphs despite them being disconnected.
 
 Ideally, the second feature that updates the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
 
