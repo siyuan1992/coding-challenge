@@ -75,7 +75,13 @@ Edge list made by the
 
 Notice that the third tweet did not generate a new edge since there were no other hashtags besides #Apache in that tweet.
 
-The edge list can be visualized with the following diagram where each node is a hashtag
+The edge list can be visualized with the following diagrams where each node is a hashtag. The first tweet will generate the #Spark and #Apache nodes.
+
+The second tweet contains 3 hashtags #Apache, #Hadoop, and #Storm. #Apache already exists, so only #Hadoop and #Storm are added to the graph.
+
+The third tweet generated no edges, so no new nodes will be added to the graph.
+
+The fourth tweet contains #Flink and #Spark. #Spark already exists, so only #Flink will be added.
 
 
 
