@@ -44,7 +44,7 @@ Example of 4 tweets
 Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
 Doing great work #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
-Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
+Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
 ```
 
 Extracted hashtags from each tweet
@@ -52,7 +52,7 @@ Extracted hashtags from each tweet
 #Spark, #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 #Apache, #Hadoop, #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
 #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
-#Flink, #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
+#Flink, #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
 ```
 
 Two hashtags will be connected in both directions if and only if they are present in the same tweet. Only tweets that contain two or more hashtags can potentially create new edges. 
@@ -102,12 +102,12 @@ The rolling average degree is now
 ### Modifying the Twitter Hashtag Graph with Incoming Tweet
 Now let's say another tweet has arrived
 ```
-New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
 ```
 
 The extracted hashtags are then
 ```
-#HBase, #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+#HBase, #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
 ```
 
 and added to the edge list
@@ -152,8 +152,8 @@ The full list of tweets now is
 Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
 Doing great work #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
-Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
-New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
+New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
 New 2.7.1 version update for #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
 ```
 
@@ -163,8 +163,8 @@ The new hashtags to be used are as follows
 ```
 #Apache, #Hadoop, #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
 #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
-#Flink, #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
-#HBase, #Spark (timestamp: Thu Oct 29 17:54:00 +0000 2015)
+#Flink, #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
+#HBase, #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
 #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
 ```
 
