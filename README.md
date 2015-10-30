@@ -72,12 +72,23 @@ Edge list made by all the above tweets is as follows:
 Notice that the third tweet did not generate a new edge since there were no other hashtags besides #Apache in that tweet. Also, all tweets occured in the 60 seconds time window as compared to the latest tweet and they all are included in building the graph.
 
 The edge list can be visualized with the following diagrams where each node is a hashtag. The first tweet will generate the #Spark and #Apache nodes.
+![spark-apache-graph](images/htag_graph_1.png)
 
 The second tweet contains 3 hashtags #Apache, #Hadoop, and #Storm. #Apache already exists, so only #Hadoop and #Storm are added to the graph.
+![apache-hadoop-storm-graph](images/htag_graph_2.png)
 
 The third tweet generated no edges, so no new nodes will be added to the graph.
 
 The fourth tweet contains #Flink and #Spark. #Spark already exists, so only #Flink will be added.
+![flink-spark-graph](images/htag_graph_3.png)
+
+We can now calculate the degree of each node which is defined as the number of connected neighboring nodes.
+![graph-degree1](images/htag_degree1.png)
+
+The average degree of the graph is calculated by summing the degrees of all nodes and dividing by the total number of nodes in the graph
+
+Average Degree = (1+2+3+2+2)/5 = 2.0
+
 
 
 
