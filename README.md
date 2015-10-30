@@ -35,45 +35,41 @@ tweets.txt:
 
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`.  In order for your submission to be checked, it needs to output the results of your first feature in order, according to the [ASCII Code](http://www.ascii-code.com), as shown in the above example.  For simplicity, treat all punctuation as part of the word itself, so 'business.' would be counted as a different word than 'business' without the period.
 
-The second feature will continually update the average degree of a Twitter hashtag graph as each tweet arrives. For each incoming tweet, the hastags needs to be extracted. 
+The second feature will continually update the Twitter hashtag graph and hence, the average degree of the graph. But as the graph should just be built using tweets that arrived in the last 60 seconds. As new tweets come in, edges and nodes formed in the graph due to tweets older than 60 seconds in time should be evicted. For each incoming tweet, the hastags and timestamp needs to be extracted. 
 
 Example of 4 tweets
 ```
-Spark Summit East this week! #Spark #Apache
-Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm
-Doing great work #Apache
-Excellent post on #Flink and #Spark
+Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+Doing great work #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:52:05 +0000 2015)
 ```
 
 Extracted hashtags from each tweet
 ```
-#Spark, #Apache
-#Apache, #Hadoop, #Storm
-#Apache
-#Flink, #Spark
+#Spark, #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+#Apache, #Hadoop, #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+#Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+#Flink, #Spark (timestamp: Thu Oct 29 17:52:05 +0000 2015)
 ```
 
 Two hashtags will be connected in both directions if and only if they are present in the same tweet. Only tweets that contain two or more hashtags can potentially create new edges. 
 
 A good way to create this graph is by first forming an edge list where an edge is defined by two hashtags that are connected. 
 
-Edge list made by the 
+Edge list made by all the above tweets is as follows:
 ```
-#Spark, #Apache
-#Apache, #Spark
+#Spark <-> #Apache
 
-#Apache, #Hadoop
-#Hadoop, #Apache
-#Hadoop, #Storm
-#Storm, #Hadoop
-#Storm, #Apache
-#Apache, #Storm
+#Apache <-> #Hadoop
+#Hadoop <-> #Storm
+#Storm <-> #Apache
 
-#Flink, #Spark
-#Spark, #Flink
+#Flink <-> #Spark
+#Spark <-> #Flink
 ```
 
-Notice that the third tweet did not generate a new edge since there were no other hashtags besides #Apache in that tweet.
+Notice that the third tweet did not generate a new edge since there were no other hashtags besides #Apache in that tweet. Also, all tweets occured in the 60 seconds time window as compared to the latest tweet and they all are included in building the graph.
 
 The edge list can be visualized with the following diagrams where each node is a hashtag. The first tweet will generate the #Spark and #Apache nodes.
 
