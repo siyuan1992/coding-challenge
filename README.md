@@ -91,7 +91,7 @@ We can now calculate the degree of each node which is defined as the number of c
 
 The average degree for simplicity will be calculated by summing the degrees of all nodes in all graphs and dividing by the total number of nodes in all graphs.
 
-Average Degree = (1+2+3+2+2)/5 = 2.0
+Average Degree = (1+2+3+2+2)/5 = 2.00
 
 ## Modifying the Twitter Hashtag Graph with Incoming Tweet
 Now let's say another tweet has arrived
@@ -127,7 +127,13 @@ with the updated degree calculation for each node. Here only #Spark needs to be 
 
 The average degree will be recalculated using the same formula as before.
 
-Average Degree = (1+3+1+3+2+2)/6 = 2.0
+Average Degree = (1+3+1+3+2+2)/6 = 2.00
+
+The rolling average degree is now 
+```
+2.00
+2.00
+```
 
 ## Maintaining Data within the 60 Second Window
 Now let's say that the next tweet that comes in has the following timestamp
@@ -179,6 +185,13 @@ Recalculating the average degree of all nodes in all graphs is as follows
 Average Degree = (1+2+1+2+2+2)/6 = 1.67
 
 Normally the average degree is calculated for a single graph, but maintaining multiple graphs for this problem can be quite difficult. For simplicity we are only interested in calculating the average degree of of all the nodes in all graphs despite them being disconnected.
+
+The rolling average degree is now 
+```
+2.00
+2.00
+1.67
+```
 
 Ideally, the second feature that updates the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
 
