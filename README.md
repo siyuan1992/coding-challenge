@@ -42,7 +42,7 @@ Example of 4 tweets
 Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
 Doing great work #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
-Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
 ```
 
 Extracted hashtags from each tweet
@@ -50,7 +50,7 @@ Extracted hashtags from each tweet
 #Spark, #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 #Apache, #Hadoop, #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
 #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
-#Flink, #Spark (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+#Flink, #Spark (timestamp: Thu Oct 29 17:52:00 +0000 2015)
 ```
 
 Two hashtags will be connected in both directions if and only if they are present in the same tweet. Only tweets that contain two or more hashtags can potentially create new edges. 
