@@ -31,7 +31,7 @@ tweets.txt:
 
 ## First Feature
 
-The point of the first feature is to extract and clean the relevant data for the Twitter JSON messages.  For example, a typical tweet might come in the following JSON message:
+The point of the first feature is to extract and clean the relevant data for the Twitter JSON messages.  For example, a typical tweet might come in the following JSON message (which we have expanded on to multiple lines to make it easier to read):
 
 <pre>
 {"created_at":"<b>Thu Oct 29 17:51:01 +0000 2015</b>","id":659789759787589632,
@@ -60,7 +60,12 @@ The point of the first feature is to extract and clean the relevant data for the
 }  
 </pre>
 
-Where the relevant text that we want to extract has been bolded.
+Where the relevant text that we want to extract has been bolded.  After extracting and cleaning it, this tweet should be outputted as
+
+	Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+
+with the format of 
+	`contents of "text" field` (timestamp: `contents of "created_at" field`)
 
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`, with each new tweet on a newline.
 
