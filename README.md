@@ -61,7 +61,7 @@ The point of the first feature is to extract and clean the relevant data for the
 }  
 </pre>
 
-Where the relevant text that we want to extract has been bolded.  After extracting this information, this tweet should be outputted as
+where the relevant text that we want to extract has been bolded.  After extracting this information, this tweet should be outputted as
 
 	Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 
@@ -276,7 +276,10 @@ We'll then calculate the new degree for all the nodes in both graphs.
 ![graph-degree5](images/htag_degree_5.png)
 
 Recalculating the average degree of all nodes in all graphs is as follows
+
+```
 Average Degree = (1+2+1+2+2+2)/6 = 1.67
+```
 
 Normally the average degree is calculated for a single graph, but maintaining multiple graphs for this problem can be quite difficult. For simplicity we are only interested in calculating the average degree of of all the nodes in all graphs despite them being disconnected.
 
