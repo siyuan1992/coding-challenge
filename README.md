@@ -341,7 +341,7 @@ While you're welcome to use any language or technology, it will be tested on a s
 You may write your solution on any system, but your code should be portable and work on all systems.  In particular, your code must be able to run on either Unix or Linux, as that's what the system will be tested on.  This means that you must submit a working `run.sh` script.  Linux machines are the industry standard for most data engineering companies, so it is helpful to be familiar with this.  If you're currently using Windows, we recommend using Cygwin or a free online IDE such as Cloud9 (c9.io).  
 
 * *When are two hashtags considered the same?*  
-Hashtags must be identical to be considered the same. 
+Hashtags must be the same, but are NOT case-sensitive.  So `#Spark`, `#spark`, and `#SPARK` should all be counted as the same hashtag.  
 
 * *Can I use pre-built packages, modules, or libraries?*   
 Yes, you may use any publicly available package, module, or library as long as you document any dependencies in your accompanying `README` file.  When we review your submission, we will download these libraries and attempt to run your program.   This is why it's very important that you document any dependencies or system specific details in your accompanying README file.  However, you should always ensure that the module you're using works efficiently for the specific use-case in the challenge, many libraries are not designed for large amounts of data.
