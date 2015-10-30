@@ -290,6 +290,10 @@ The rolling average degree is now
 ## Collecting tweets from the Twitter API
 Ideally, the second feature that updates the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
 
+
+## Writing clean, scalable, and well-tested code  
+As a data engineer, it’s important that you write clean, well-documented code that scales for large amounts of data.  It's also important to use software engineering best practices like unit tests, especially since public data is not clean and predictable.  For this reason, it’s important to ensure that your solution works well for a huge number of tweets, rather than just the simple examples above.  For example, your solution should be able to account for a large number of tweets coming in a short period of time, and need to keep up with the input (i.e. need to process a minute of tweets in less than a minute).  For more details about the implementation, please refer to FAQ below or email us at cc@insightdataengineering.com
+
 You may write your solution in any mainstream programming language such as C, C++, C#, Clojure, Erlang, Go, Haskell, Java, Python, Ruby, or Scala - then submit a link to a Github repo with your source code.  In addition to the source code, the top-most directory of your repo must include the `tweet_input` and `tweet_output` directories, and a shell script named `run.sh` that compiles and runs the program(s) that implement these features.  If your solution requires additional libraries, environments, or dependencies, you must specify these in your README documentation.  See the figure below for the required structure of the top-most directory in your repo, or simply clone this repo.
 
 ## Repo directory structure
@@ -308,12 +312,10 @@ Alternatively, here is example output of the `tree` command:
 	    ├── ft1.txt  
 	    └── ft2.txt  
 
-As a data engineer, it’s important that you write clean, well-documented code that scales for large amounts of data.  It's also important to use software engineering best practices like unit tests, especially since public data is not clean and predictable.  For this reason, it’s important to ensure that your solution works well for a huge number of tweets, rather than just the simple examples above.  For example, your solution should be able to account for a large number of tweets coming in a short period of time, and need to keep up with the input (i.e. need to process a minute of tweets in less than a minute).  For more details about the implementation, please refer to FAQ below or email us at cc@insightdataengineering.com
-
 
 ## FAQ
 
-Here are some common questions we've received.  If you have additional questions, feel free fork this repo, add them to the README.md, then issue a pull request.  Alternatively, you can email cc@insightdataengineering.com and we'll add the answers.
+Here are some common questions we've received.  If you have additional questions, feel free fork this repo, add them to the README.md, then issue a pull request.  Alternatively, you can email cc@insightdataengineering.com and we'll add the answers as quickly as we can.
 
 * *Which Github link should I submit?*  
 You should submit the URL for the top-level root of your repository.  For example, this repo would be submitted by copying the URL `https://github.com/InsightDataScience/cc-example` into the appropriate field on the application.  Please do NOT try to submit your coding challenge using a pull request, which will make your source code publicly available.  
@@ -322,7 +324,7 @@ You should submit the URL for the top-level root of your repository.  For exampl
 No, you may use a public repo, there is no need to purchase a private repo.   
 
 * *Do you have any larger sample inputs?*  
-Yes, we have just added an example input with 10,000 tweets in the `data-gen` directory of this repo.  It also contains a simplified producer that can connect to the live Twitter API and clean the data to conform to input requirements of this data challenge.  This is not required for this challenge, but may be helpful for testing your solution.  
+Yes, we have just added an example input with 10,000 tweets in the `data-gen` directory of this repo.  It also contains a simplified producer that can connect to the live Twitter API and save the tweets to an input file that conforms to the requirements of this data challenge.  This is not required for this challenge, but may be helpful for testing your solution.  
 
 * *May I use R or other analytics programming languages to solve the challenge?*  
 While you may use any programming language to complete the challenge, it's important that your implementation scales to handle large amounts of data.  Many applicants have found that R is unable to process data in a scalable fashion, so it may be more practical to use another language.  
@@ -331,13 +333,16 @@ While you may use any programming language to complete the challenge, it's impor
 While you're welcome to use any language or technology, it will be tested on a single machine so there may not be a significant benefit to using these technologies prior to the program.  With that said, learning distributed systems would be a valuable skill for all data engineers.
 
 * *What sort of system should I use to run my program on (Windows, Linux, Mac)?*  
-You may write your solution on any system, but your code should be portable and work on all systems.  You should also specify your environment and system in your accompanying README file.  
+You may write your solution on any system, but your code should be portable and work on all systems.  In particular, your code must be able to run on either Unix or Linux, as that's what the system will be tested on.  This means that you must submit a working `run.sh` script.  Linux machines are the industry standard for most data engineering companies, so it is helpful to be familiar with this.  If you're currently using Windows, we recommend using Cygwin or a free online IDE such as Cloud9 (c9.io).  
 
-* *How should punctuation be handled?*  
-Please don't worry about punctuation for this challenge.  In theory, you could spend a lot of time in details related to natural language processing (NLP), but this isn't the intended focus for the challenge.  The only "punctuation" you need to worry about are whitespaces, which are the delimiters between words.  
+* *When are two hashtags considered the same?*  
+Hashtags must be identical to be considered the same. 
 
 * *Can I use pre-built packages, modules, or libraries?*   
 Yes, you may use any publicly available package, module, or library as long as you document any dependencies in your accompanying `README` file.  When we review your submission, we will download these libraries and attempt to run your program.   This is why it's very important that you document any dependencies or system specific details in your accompanying README file.  However, you should always ensure that the module you're using works efficiently for the specific use-case in the challenge, many libraries are not designed for large amounts of data.
+
+* *Will you email me if my code doesn't run?*   
+Unfortunately, we receive hundreds of submissions in a very short time and are unable to email individuals if code doesn't compile or run.  This is why it's so important to document any dependencies you have, as described in the previous question.  We will do everything we can to properly test your code, but this requires good documentation.  
 
 * *Do I need to use multi-threading?*   
 No, your solution doesn't necessarily need to include multi-threading - there are many solutions that don't require multiple threads/cores or any distributed systems.  
@@ -345,20 +350,17 @@ No, your solution doesn't necessarily need to include multi-threading - there ar
 * *Do I need to account for and updating `tweets.txt` file?*   
 No, your solution doesn't have to re-process `tweets.txt`.  Instead, it should be designed to handle a very large input size.  If you were doing this project as a data engineer in industry, you would probably re-run your program daily to handle batches, but this is beyond the scope of this challenge.  
 
-* *What should the format of the word count be?*  
-Please try to match the above example, by listing the words in **alphabetical** order according the the ASCII ordering, with whitespace between the word and count, and each word separated by a newline.
+* *What should the format of the output be?*  
+In order to be tested correctly, you must use the format described above.  We will try our best to correct any minor formatting issues, but try to follow the examples above as closely as possible.  
 
-* *What should the precision for the output of the median be?*  
-For simplicity, please output the running median as a double with only 1 digit after the decimal (i.e. 2.0 instead of 2).  The median for each new tweet of text should be separated by newlines as shown in the example above.
-
-* *Do I need to account for complicated Unicode characters?*  
-No, you may assume that all of the characters are conventional, ASCII characters.
+* *Do I need to account for complicated Unicode characters by replacing them?*  
+No, you simply need to remove them and track how many tweets require this removal.  
 
 * *Should I check if the files in the input directory are text files or non-text files(binary)?*  
 No, for simplicity you may assume that all of the files in the input directory are standard text files.  
 
 * *Do I need to account for empty tweets?*  
-No, for simplicity you may assume that all the tweets contain at least one word.  
+No, for simplicity you may assume that all the tweets contain at least one word.  However, many tweets contain only unicode chracters, which will be effectively empty after you clean them.  This means you will have to test properly when implementing the second feature on real data.   
 
 * *Do I need separate programs for different features?*  
 You may use a single combined program or several programs, as long as they are all executed by the `run.sh` script.
@@ -370,7 +372,7 @@ Yes, you can use what ever tools you want -  as long as your `run.sh` script cor
 You can put any text file you want in the directory.  In fact, this could be quite helpful for testing your solutions.
 
 * *How will the coding challenge be evaluated?*  
-Generally, we will evaluate your coding challenge with a testing suite that provides a variety of input tweets and checks the corresponding output.  This suite will attempt to use your 'run.sh' and is fairly tolerant to different output formats.  Of course, there are many aspects that cannot be tested by our suite, so each submission will be reviewed by a person as well. 
+Generally, we will evaluate your coding challenge with a testing suite that provides a variety of input tweets and checks the corresponding output.  This suite will attempt to use your 'run.sh' and is fairly tolerant to different runtime environments.  Of course, there are many aspects that cannot be tested by our suite, so each submission will be reviewed manually by a person as well. 
 
 * *How long will it take for me to hear back from you about my submission?*  
 We receive hundreds of submissions and try to evaluate them all in a timely manner.  We try to get back to all applicants within two or three weeks of submission, but if you have a specific deadline that requires expedited review, you may email us at cc@insightdataengineering.com.  
