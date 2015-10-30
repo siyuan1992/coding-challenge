@@ -290,6 +290,8 @@ The rolling average degree is now
 1.67
 ```
 
+The output of the second feature should be a file in the `tweet_output` directory named `ft2.txt` that contains the rolling average for each tweet in the file (e.g. if there are three input tweets, then there should be 3 averages), following the format above.  The precision of the average should be two digits after the decimal place (i.e. rounded to the nearest hundredths place).
+
 ## Collecting tweets from the Twitter API
 Ideally, the second feature that updates the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
 
@@ -355,6 +357,9 @@ No, your solution doesn't have to re-process `tweets.txt`.  Instead, it should b
 
 * *What should the format of the output be?*  
 In order to be tested correctly, you must use the format described above.  We will try our best to correct any minor formatting issues, but try to follow the examples above as closely as possible.  
+
+* *What should the precision of the rolling average be?*  
+The precision of the average should be two digits after the decimal place (i.e. rounded to the nearest hundredths place).  
 
 * *Do I need to account for complicated Unicode characters by replacing them?*  
 No, you simply need to remove them and track how many tweets require this removal.  
