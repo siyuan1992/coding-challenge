@@ -87,11 +87,16 @@ The fourth tweet contains #Flink and #Spark. #Spark already exists, so only #Fli
 
 We can now calculate the degree of each node which is defined as the number of connected neighboring nodes.
 
-![graph-degree3](images/htag_degree3.png)
+![graph-degree3](images/htag_degree_3.png)
 
 The average degree for simplicity will be calculated by summing the degrees of all nodes in all graphs and dividing by the total number of nodes in all graphs.
 
 Average Degree = (1+2+3+2+2)/5 = 2.00
+
+The rolling average degree is now 
+```
+2.00
+```
 
 ## Modifying the Twitter Hashtag Graph with Incoming Tweet
 Now let's say another tweet has arrived
