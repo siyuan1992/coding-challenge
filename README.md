@@ -7,8 +7,9 @@ For this coding challenge, you will develop tools that could help analyze the co
 
 This challenge is to implement two features:
 
-1. Extract the time stamp and text from the raw JSON tweets that come from the Twitter Streaming API, "clean" them, and track the number of tweets that required cleaning.
-2. Calculate the average degree of a vertex in a "60-second Twitter graph", and update this each time a new tweet appears.
+1. Clean and extract the text from the raw JSON tweets that come from the Twitter Streaming API, and track the number of tweets that required cleaning.
+2. Calculate the average degree of a vertex in a Twitter hashtag graph for the last 60 seconds, and update this each time a new tweet appears.
+
 
 For this challenge, we need to define two concepts
 
@@ -33,10 +34,176 @@ tweets.txt:
 
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`.  In order for your submission to be checked, it needs to output the results of your first feature in order, according to the [ASCII Code](http://www.ascii-code.com), as shown in the above example.  For simplicity, treat all punctuation as part of the word itself, so 'business.' would be counted as a different word than 'business' without the period.
 
-Ideally, the second feature that updates the median as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the this API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
+## Second Feature
+The second feature will continually update the Twitter hashtag graph and hence, the average degree of the graph. The graph should just be built using tweets that arrived in the last 60 seconds as compared to the timestamp of the latest tweet. As new tweets come in, edges formed with tweets older than 60 seconds from the timstamp of the latest tweet should be evicted. For each incoming tweet, only the hastags and timestamp needs to be extracted. 
+
+### Building the Twitter Hashtag Graph
+Example of 4 tweets
+```
+Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+Doing great work #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
+```
+
+Extracted hashtags from each tweet
+```
+#Spark, #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+#Apache, #Hadoop, #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+#Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+#Flink, #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
+```
+
+Two hashtags will be connected in both directions if and only if they are present in the same tweet. Only tweets that contain two or more hashtags can potentially create new edges. 
+
+A good way to create this graph is with an edge list where an edge is defined by two hashtags that are connected. 
+
+The edge list made by all the above tweets is as follows:
+```
+#Spark <-> #Apache
+
+#Apache <-> #Hadoop
+#Hadoop <-> #Storm
+#Storm <-> #Apache
+
+#Flink <-> #Spark
+```
+
+Notice that the third tweet did not generate a new edge since there were no other hashtags besides `#Apache` in that tweet. Also, all tweets occured in the 60 seconds time window as compared to the latest tweet and they all are included in building the graph.
+
+The edge list can be visualized with the following diagrams where each node is a hashtag. The first tweet will generate the `#Spark` and `#Apache` nodes.
+
+![spark-apache-graph](images/htag_graph_1.png)
+
+The second tweet contains 3 hashtags `#Apache`, `#Hadoop`, and `#Storm`. `#Apache` already exists, so only `#Hadoop` and `#Storm` are added to the graph.
+
+![apache-hadoop-storm-graph](images/htag_graph_2.png)
+
+The third tweet generated no edges, so no new nodes will be added to the graph.
+
+The fourth tweet contains `#Flink` and `#Spark`. `#Spark` already exists, so only `#Flink` will be added.
+
+![flink-spark-graph](images/htag_graph_3.png)
+
+We can now calculate the degree of each node which is defined as the number of connected neighboring nodes.
+
+![graph-degree3](images/htag_degree_3.png)
+
+The average degree for simplicity will be calculated by summing the degrees of all nodes in all graphs and dividing by the total number of nodes in all graphs.
+
+Average Degree = (1+2+3+2+2)/5 = 2.00
+
+The rolling average degree is now 
+```
+2.00
+```
+
+### Modifying the Twitter Hashtag Graph with Incoming Tweet
+Now let's say another tweet has arrived
+```
+New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
+```
+
+The extracted hashtags are then
+```
+#HBase, #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
+```
+
+and added to the edge list
+```
+#Spark <-> #Apache
+
+#Apache <-> #Hadoop
+#Hadoop <-> #Storm
+#Storm <-> #Apache
+
+#Flink <-> #Spark
+
+#HBase <-> $Spark
+```
+
+The graph now looks like the following
+
+![hbase-spark-graph](images/htag_graph_4.png)
+
+with the updated degree calculation for each node. Here only `#Spark` needs to be incremented due to the additional `#HBase` node.
+
+![graph-degree4](images/htag_degree_4.png)
+
+The average degree will be recalculated using the same formula as before.
+
+Average Degree = (1+3+1+3+2+2)/6 = 2.00
+
+The rolling average degree is now 
+```
+2.00
+2.00
+```
+
+### Maintaining Data within the 60 Second Window
+Now let's say that the next tweet that comes in has the following timestamp
+```
+New 2.7.1 version update for #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+```
+
+The full list of tweets now is 
+```
+Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
+Just saw a great post on Insight Data Engineering #Apache #Hadoop #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+Doing great work #Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+Excellent post on #Flink and #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
+New and improved #HBase connector for #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
+New 2.7.1 version update for #Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+```
+
+We can see that the very first tweet has a timestamp that is more than 60 seconds behind this new tweet. This means that we do not want to include this tweet in our average degree calculation.
+
+The new hashtags to be used are as follows
+```
+#Apache, #Hadoop, #Storm (timestamp: Thu Oct 29 17:51:30 +0000 2015)
+#Apache (timestamp: Thu Oct 29 17:51:55 +0000 2015)
+#Flink, #Spark (timestamp: Thu Oct 29 17:51:56 +0000 2015)
+#HBase, #Spark (timestamp: Thu Oct 29 17:51:59 +0000 2015)
+#Hadoop #Apache (timestamp: Thu Oct 29 17:52:05 +0000 2015)
+```
+
+The new edge list only has the `#Spark` <-> `#Apache` edge removed since `#Hadoop` <-> `#Apache` from the new tweet already exists in the edge list.
+```
+#Apache <-> #Hadoop
+#Hadoop <-> #Storm
+#Storm <-> #Apache
+
+#Flink <-> #Spark
+
+#HBase <-> $Spark
+```
+
+The old graph has now been disconnected forming two graphs.
+
+![evicted-spark-apache](images/htag_graph_5.png)
+
+We'll then calculate the new degree for all the nodes in both graphs.
+
+![graph-degree5](images/htag_degree_5.png)
+
+Recalculating the average degree of all nodes in all graphs is as follows
+Average Degree = (1+2+1+2+2+2)/6 = 1.67
+
+Normally the average degree is calculated for a single graph, but maintaining multiple graphs for this problem can be quite difficult. For simplicity we are only interested in calculating the average degree of of all the nodes in all graphs despite them being disconnected.
+
+The rolling average degree is now 
+```
+2.00
+2.00
+1.67
+```
+
+## Collecting tweets from the Twitter API
+Ideally, the second feature that updates the average degree of a Twitter hashtag graph as each tweet arrives would be connected to the Twitter streaming API and would add new tweets to the end of `tweets.txt`.  However, connecting to the API requires more system specific "dev ops" work, which isn't the primary focus for data engineers.  Instead, you should simply assume that each new line of the text file corresponds to a new tweet and design your program to handle a text file with a large number of tweets.  Your program should output the results of this second feature to a text file named `ft2.txt` in the `tweet_output` directory.
 
 You may write your solution in any mainstream programming language such as C, C++, C#, Clojure, Erlang, Go, Haskell, Java, Python, Ruby, or Scala - then submit a link to a Github repo with your source code.  In addition to the source code, the top-most directory of your repo must include the `tweet_input` and `tweet_output` directories, and a shell script named `run.sh` that compiles and runs the program(s) that implement these features.  If your solution requires additional libraries, environments, or dependencies, you must specify these in your README documentation.  See the figure below for the required structure of the top-most directory in your repo, or simply clone this repo.
 
+## Repo directory structure
 ![Example Repo Structure](images/directory-pic.png)
 
 Alternatively, here is example output of the `tree` command:
@@ -44,8 +211,8 @@ Alternatively, here is example output of the `tree` command:
 	├── README.md  
 	├── run.sh  
 	├── src  
-	│   ├── median_unique.py  
-	│   └── words_tweeted.py  
+	│   ├── average_degree.py  
+	│   └── tweets_cleaned.py  
 	├── tweet_input  
 	│   └── tweets.txt  
 	└── tweet_output  
