@@ -65,7 +65,8 @@ Where the relevant text that we want to extract has been bolded.  After extracti
 	Spark Summit East this week! #Spark #Apache (timestamp: Thu Oct 29 17:51:01 +0000 2015)
 
 with the format of 
-	`contents of "text" field` (timestamp: `contents of "created_at" field`)
+
+	<contents of `text` field> (timestamp: <contents of `created_at` field>)
 
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`, with each new tweet on a newline.
 
