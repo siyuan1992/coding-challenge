@@ -10,28 +10,24 @@ This challenge is to implement two features:
 1. Clean and extract the text from the raw JSON tweets that come from the Twitter Streaming API, and track the number of tweets that required cleaning.
 2. Calculate the average degree of a vertex in a Twitter hashtag graph for the last 60 seconds, and update this each time a new tweet appears.
 
-For example, suppose the following three tweets come in, one after the other
+Here, we have to define a few concepts (though there will be examples below to clarify):
 
-In this challenge we have made a few assumptions to make things simpler:
-
-- Each tweet only contains lowercase letters, numbers, and ASCII characters like `:`, `@`, and `#`.
-- A word is defined as anything separated by whitespace. 
-
-Note that the output of the first feature is outputted in order, according to the [ASCII Code](http://www.ascii-code.com).   
+- A tweet's text is considered "clean" once all of the escape characters (e.g. \n, \", \/ ) and unicode have been removed.
+- A Twitter hashtag graph is a graph connecting all the hashtags that have mentioned together in a single tweet.
 
 ## Details of Implementation
 
-We'd like you to implement your own version of these two features.  However, we don't want this challenge to focus on the relatively uninteresting data cleaning and munging.  Normally, tweets can be obtained through Twitter's API in JSON format and the "payload" text is parsed, but you may assume that this has already been done and written to a file named `tweets.txt` inside a directory named `tweet_input`.  For simplicity, this file `tweets.txt` will only contain lowercase letters, numbers, and ASCII characters (e.g. common punctuation and characters like `@`, and `#`).  Additionally, `tweets.txt` will have the content of each tweet on a newline:
+We'd like you to implement your own version of these two features.  However, we don't want this challenge to focus on the relatively uninteresting "dev ops" of connecting to the Twitter API, which can be complicated for some users.  Normally, tweets can be obtained through Twitter's API in JSON format, but you may assume that this has already been done and written to a file named `tweets.txt` inside a directory named `tweet_input`.  For simplicity, this file `tweets.txt` will only contain the actual JSON messages (in reality, the API also can emit messages about the connection and the API rate limits).  Additionally, `tweets.txt` will have the content of each tweet on a newline:
 
 tweets.txt:
 
-	Contents of first tweet  
-	Contents of second tweet  
-	Contents of third tweet  
+	{JSON of first tweet}  
+	{JSON of second tweet}  
+	{JSON of third tweet}  
 	.
 	.
 	.
-	Contents of last tweet  
+	{JSON of lasst tweet}  
 
 Your program should output the results of this first feature to a text file named `ft1.txt` in a directory named `tweet_output`.  In order for your submission to be checked, it needs to output the results of your first feature in order, according to the [ASCII Code](http://www.ascii-code.com), as shown in the above example.  For simplicity, treat all punctuation as part of the word itself, so 'business.' would be counted as a different word than 'business' without the period.
 
@@ -227,7 +223,7 @@ As a data engineer, it’s important that you write clean, well-documented code 
 
 ## FAQ
 
-Here are some common questions we've received.  If you have additional questions, feel free fork this repo, add them to the README.md, then issue a pull request.  Alternatively, you can email info@insightdataengineering.com and we'll add the answers.
+Here are some common questions we've received.  If you have additional questions, feel free fork this repo, add them to the README.md, then issue a pull request.  Alternatively, you can email cc@insightdataengineering.com and we'll add the answers.
 
 * *Which Github link should I submit?*  
 You should submit the URL for the top-level root of your repository.  For example, this repo would be submitted by copying the URL `https://github.com/InsightDataScience/cc-example` into the appropriate field on the application.  Please do NOT try to submit your coding challenge using a pull request, which will make your source code publicly available.  
@@ -287,5 +283,5 @@ You can put any text file you want in the directory.  In fact, this could be qui
 Generally, we will evaluate your coding challenge with a testing suite that provides a variety of input tweets and checks the corresponding output.  This suite will attempt to use your 'run.sh' and is fairly tolerant to different output formats.  Of course, there are many aspects that cannot be tested by our suite, so each submission will be reviewed by a person as well. 
 
 * *How long will it take for me to hear back from you about my submission?*  
-We receive hundreds of submissions and try to evaluate them all in a timely manner.  We try to get back to all applicants within two or three weeks of submission, but if you have a specific deadline that requires expedited review, you may email us at info@insightdataengineering.com.  
+We receive hundreds of submissions and try to evaluate them all in a timely manner.  We try to get back to all applicants within two or three weeks of submission, but if you have a specific deadline that requires expedited review, you may email us at cc@insightdataengineering.com.  
 
