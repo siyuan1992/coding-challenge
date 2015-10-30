@@ -7,17 +7,15 @@ For this coding challenge, you will develop tools that could help analyze the co
 
 This challenge is to implement two features:
 
-1. Clean and extract the text from the raw JSON tweets that come from the Twitter Streaming API, and track the number of tweets that required cleaning.
-2. Calculate the average degree of a vertex in a Twitter graph for the last 60 seconds, and update this each time a new tweet appears.
+1. Extract the time stamp and text from the raw JSON tweets that come from the Twitter Streaming API, "clean" them, and track the number of tweets that required cleaning.
+2. Calculate the average degree of a vertex in a "60-second Twitter graph", and update this each time a new tweet appears.
 
-For example, suppose the following three tweets come in, one after the other
+For this challenge, we need to define two concepts
 
-In this challenge we have made a few assumptions to make things simpler:
+- By "cleaning", we mean removing any escape characters and non-ASCII characters, so that numbers, and ASCII characters like `:`, `@`, and `#`.
 
-- Each tweet only contains lowercase letters, numbers, and ASCII characters like `:`, `@`, and `#`.
-- A word is defined as anything separated by whitespace. 
 
-Note that the output of the first feature is outputted in order, according to the [ASCII Code](http://www.ascii-code.com).   
+Note that the output of the first feature
 
 ## Details of Implementation
 
